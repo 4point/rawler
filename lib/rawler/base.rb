@@ -76,10 +76,12 @@ module Rawler
     def add_status_code(link, from_url)
       response = Rawler::Request.get(link)
 
-      record_response(response.code, link, from_url, response['Location'])
+      redirect_to = redirect(response, link)
+
+      record_response(response.code, link, from_url, redirect_to)
       responses[link] = { :status => response.code.to_i }
 
-      validate_page(response['Location'], from_url) if response['Location']
+      validate_page(redirect_to, from_url) if redirect_to
 
     rescue Errno::ECONNREFUSED
       error("Connection refused - #{link} - Called from: #{from_url}")
@@ -88,6 +90,13 @@ module Rawler
       error("Connection problems - #{link} - Called from: #{from_url}")
     rescue Exception => e
       error("Unknown error #{e} (#{e.class}) - #{link} - Called from: #{from_url}")
+    end
+
+    def redirect(response, from)
+      return nil unless response['Location']
+      return response['Location'] if URI.parse(response['Location']).absolute?
+
+      URI.join(from, response['Location']).to_s
     end
 
     def same_domain?(link)

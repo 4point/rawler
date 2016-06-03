@@ -139,6 +139,15 @@ describe Rawler::Base do
       rawler.validate
     end
 
+    it "should handle relative redirections" do
+      register('http://example.com', '<a href="/foo">foo</a>')
+      register('http://example.com/foo', '', 301, :location => 'bar')
+
+      output.should_receive(:warn).with('301 - http://example.com/foo - Called from: http://example.com - Following redirection to: http://example.com/bar')
+
+      rawler.validate
+    end
+
   end
 
   describe "get_status_code" do
