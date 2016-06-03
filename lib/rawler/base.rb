@@ -86,8 +86,8 @@ module Rawler
     rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ETIMEDOUT,
       EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError, SocketError
       error("Connection problems - #{link} - Called from: #{from_url}")
-    rescue Exception
-      error("Unknown error - #{link} - Called from: #{from_url}")
+    rescue Exception => e
+      error("Unknown error #{e} (#{e.class}) - #{link} - Called from: #{from_url}")
     end
 
     def same_domain?(link)
