@@ -84,10 +84,11 @@ module Rawler
       validate_page(redirect_to, from_url) if redirect_to
 
     rescue Errno::ECONNREFUSED
-      error("Connection refused - #{link} - Called from: #{from_url}")
+      record_response("Connection refused", link, from_url, redirect_to)
+
     rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ETIMEDOUT,
       EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError, SocketError
-      error("Connection problems - #{link} - Called from: #{from_url}")
+      record_response("Connection problems", link, from_url, redirect_to)
     rescue Exception => e
       error("Unknown error #{e} (#{e.class}) - #{link} - Called from: #{from_url}")
     end
@@ -114,7 +115,7 @@ module Rawler
     def record_response(code, link, from_url, redirection=nil)
       message = "#{code} - #{link}"
 
-      if code.to_i >= 300
+      if code.to_i != 200
         message += " - Called from: #{from_url}"
       end
 

@@ -429,7 +429,7 @@ describe Rawler::Crawler do
     end
   end
 
-  context "invalid urls" do
+  context "valid urls" do
     let(:content) { '<a href="http://foo;bar">foo</a>' }
     let(:url)     { 'http://example.com' }
     let(:crawler) { Rawler::Crawler.new(url) }
@@ -438,9 +438,9 @@ describe Rawler::Crawler do
       register(url, content)
     end
 
-    it "should notify about the invalid url" do
-      output.should_receive(:error).with('Invalid url: http://foo;bar - Called from: http://example.com')
-      crawler.links.should == []
+    it "should can be crawler (but we don't know if can be link)" do
+      # output.should_receive(:error).with('Invalid url: http://foo;bar - Called from: http://example.com')
+      crawler.links.should == ["http://foo;bar"]
     end
   end
 
