@@ -85,7 +85,6 @@ module Rawler
 
     rescue Errno::ECONNREFUSED
       record_response("Connection refused", link, from_url, redirect_to)
-
     rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ETIMEDOUT,
       EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError, SocketError
       record_response("Connection problems", link, from_url, redirect_to)

@@ -72,7 +72,12 @@ module Rawler
     end
 
     def content_type(url)
-      Rawler::Request.head(url).content_type
+      req = Rawler::Request.head(url)
+      if req.respond_to?('content_type')
+        return req.content_type
+      else
+        return nil
+      end
     end
 
     def not_html?(url)
